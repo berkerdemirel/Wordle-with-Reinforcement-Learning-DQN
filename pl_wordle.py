@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Optional
 import pytorch_lightning as pl
 import torch
 import torch.nn.functional as F
-
 from game import WordleGame
 from utils import build_optimizer, create_agent, linear_epsilon, load_nltk_words
 
