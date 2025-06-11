@@ -1,0 +1,38 @@
+# ------------------------------------------------------------------
+# Wordle-RL master config (Lightning)
+# ------------------------------------------------------------------
+agent: dqn          # [dqn | qn | random]
+seed: 0
+
+game:
+  word_length: 5
+  max_turns:   6          # hard Wordle rule
+
+exploration:
+  epsilon_start: 1.0
+  epsilon_end:   0.05
+  decay_steps:   5000     # linear decay span (env steps)
+
+optim:
+  optimizer:     AdamW    # any torch.optim name
+  lr_initial:    3.0e-4
+  weight_decay:  0.01
+  scheduler:     cosine   # [cosine | none]
+  scheduler_T:   10000    # T_max for cosine anneal (env steps)
+
+rl:
+  gamma:         0.997
+  n_step:        3
+
+train:
+  # total number of environment **steps** Lightning will run
+  num_env_steps:   200000    # ← replaces num_episodes
+  batch_size:      128
+  replay_capacity: 50000
+  update_every:    4         # env-steps per learner update
+  grad_clip:       1.0
+  log_every:       200       # Lightning’s log_every_n_steps
+
+test:
+  episodes: 10
+# ------------------------------------------------------------------
