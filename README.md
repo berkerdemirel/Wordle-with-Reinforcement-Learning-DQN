@@ -14,7 +14,7 @@ This project implements a Reinforcement Learning agent to play the game of Wordl
 *   Tracks and logs metrics like average turns to win, average reward, and loss.
 *   Optionally logs to Weights & Biases (WandB) if configured.
 
-## Technologies Used
+## Tools Used
 
 *   Python 3.x
 *   PyTorch
@@ -42,8 +42,8 @@ This project implements a Reinforcement Learning agent to play the game of Wordl
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
-    cd wordle-rl # Or your project directory name
+    git clone https://github.com/berkerdemirel/Wordle-with-Reinforcement-Learning-DQN.git
+    cd Wordle-with-Reinforcement-Learning-DQN
     ```
 
 2.  **Create a virtual environment (recommended):**
@@ -68,12 +68,12 @@ This project implements a Reinforcement Learning agent to play the game of Wordl
 
 ## Usage
 
-The primary way to run the project is using the PyTorch Lightning script `pl_wordle.py`.
+The primary way to run the project is using main script `main.py`.
 
 **To train/evaluate an agent:**
 
 ```bash
-python pl_wordle.py
+python -B main.py
 ```
 
 This will run with the default configuration specified in `config.yaml` (which defaults to the DQN agent).
@@ -84,8 +84,8 @@ You can easily change parameters from the command line.
 
 *   **Run a different agent (e.g., QN or random):**
     ```bash
-    python pl_wordle.py agent=qn
-    python pl_wordle.py agent=random
+    python main.py agent=qn
+    python main.py agent=random
     ```
 
 *   **Change training parameters (e.g., number of environment steps, learning rate):**
