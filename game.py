@@ -1,12 +1,17 @@
 import random
+from typing import Dict, Tuple
 
 import numpy as np  # Added for numerical state representation
-
 from utils import load_nltk_words  # Import the function from utils.py
 
 
 class WordleGame:
-    def __init__(self, word_length=5, max_turns=6, all_words=None):
+    def __init__(
+        self,
+        word_length: int = 5,
+        max_turns: int = 6,
+        all_words: list = None,
+    ):
         # Load or accept custom word list
         if all_words is None:
             from utils import load_nltk_words
@@ -63,7 +68,14 @@ class WordleGame:
             self.CORRECT_POSITION: 3,
         }
 
-    def _evaluate_guess(self, guess):
+    def _evaluate_guess(self, guess: str) -> list:
+        """
+        Evaluate a guess against the secret word and return feedback.
+        Feedback is a list of length word_length with:
+        - "green" for correct letters in the correct position,
+        - "yellow" for correct letters in the wrong position,
+        - "gray" for incorrect letters.
+        """
         guess = guess.lower()
         feedback = [self.INCORRECT_LETTER] * self.word_length
         secret_word_letter_counts = {}
@@ -99,7 +111,7 @@ class WordleGame:
                     self.alphabet_status[guess[i]] = self.INCORRECT_LETTER
         return feedback
 
-    def _feedback_for(self, guess, secret):
+    def _feedback_for(self, guess: str, secret: str) -> list:
         """Return feedback list for guess against given secret word."""
         feedback = [self.INCORRECT_LETTER] * self.word_length
         counts = {}
@@ -120,7 +132,7 @@ class WordleGame:
         return feedback
 
     # Update _filter_possible_words to enforce manual green/yellow/gray rules with duplicate handling
-    def _filter_possible_words(self, guess, feedback):
+    def _filter_possible_words(self, guess: str, feedback: str):
         """Prune possible_words to those consistent with the last feedback, including duplicate counts."""
         self.possible_words = {
             candidate
@@ -128,7 +140,15 @@ class WordleGame:
             if self._feedback_for(guess, candidate) == feedback
         }
 
-    def make_guess(self, guess_word):
+    def make_guess(self, guess_word: str) -> Tuple[str, list, bool]:
+        """
+        Process a guess word, evaluate it against the secret word,
+        and update the game state accordingly.
+        Returns a tuple of:
+        - A message indicating the result of the guess.
+        - A list of feedback for each letter in the guess.
+        - A boolean indicating if the game is over (won or lost).
+        """
         if len(guess_word) != self.word_length:
             return "Invalid guess length.", None, False  # Message, feedback, game_over
 
@@ -158,7 +178,13 @@ class WordleGame:
 
         return "Guess processed.", feedback, game_over
 
-    def get_state(self):
+    def get_state(self) -> Dict[str, np.ndarray]:
+        """
+        Get the current state of the game as a dictionary of numpy arrays.
+        The state includes:
+        - A board representation of guesses and feedback.
+        - An encoded representation of the alphabet status.
+        - The current turn number."""
         # Board representation: (max_turns, word_length, 2)
         # Layer 0: character int (-1 for padding)
         # Layer 1: feedback int (0 for padding/no feedback)
@@ -197,7 +223,8 @@ class WordleGame:
             "current_turn": current_turn_encoded,
         }
 
-    def is_game_over(self):
+    def is_game_over(self) -> bool:
+        """Check if the game is over based on the last guess and current turn."""
         if not self.guesses_history:
             return False
         last_guess, last_feedback = self.guesses_history[-1]

@@ -6,6 +6,7 @@ import pytorch_lightning as pl
 import torch
 import torch.nn.functional as F
 from game import WordleGame
+from omegaconf import DictConfig
 from utils import build_optimizer, create_agent, linear_epsilon, load_nltk_words
 
 
@@ -15,7 +16,7 @@ class WordleLightning(pl.LightningModule):
     to a `BaseAgent` instance (DQN, QN, or Random).
     """
 
-    def __init__(self, cfg):
+    def __init__(self, cfg: DictConfig):
         super().__init__()
         self.save_hyperparameters(cfg)
 
@@ -50,7 +51,7 @@ class WordleLightning(pl.LightningModule):
     # ------------------------------------------------------------------ #
     # Lightning boilerplate                                              #
     # ------------------------------------------------------------------ #
-    def forward(self, *args, **kwargs):
+    def forward(self, *args, **kwargs) -> torch.Tensor:
         if not hasattr(self.agent, "model"):
             raise RuntimeError("RandomAgent has no forward pass.")
         return self.agent.model(*args, **kwargs)
@@ -67,7 +68,7 @@ class WordleLightning(pl.LightningModule):
             },
         }
 
-    def train_dataloader(self):
+    def train_dataloader(self) -> torch.utils.data.DataLoader:
         # Dummy DataLoader: Lightning requires one but we manage all work in training_step
         return torch.utils.data.DataLoader(range(1), batch_size=1)
 

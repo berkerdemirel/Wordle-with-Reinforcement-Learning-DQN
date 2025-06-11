@@ -1,12 +1,13 @@
+from typing import Any, Dict, List, Optional, Union
+
 import nltk
 import torch
+from agent import DQNRLAgent, QRLAgent, RandomAgent
 from nltk.corpus import words as nltk_words
 from omegaconf import DictConfig
 
-from agent import DQNRLAgent, QRLAgent, RandomAgent
 
-
-def load_nltk_words(word_length):
+def load_nltk_words(word_length: int) -> list:
     """Loads words from NLTK, downloads corpus if necessary."""
     try:
         # Check if 'words' corpus is available
@@ -36,7 +37,9 @@ def load_nltk_words(word_length):
     return filtered_words_list  # Use set to remove duplicates, then convert to list
 
 
-def create_agent(cfg: DictConfig, vocab: list, device: torch.device):
+def create_agent(
+    cfg: DictConfig, vocab: list, device: torch.device
+) -> Union[DQNRLAgent, QRLAgent, RandomAgent]:
     if cfg.get("agent", "dqn") == "dqn":
         agent = DQNRLAgent(
             all_words=vocab,
@@ -72,7 +75,10 @@ def create_agent(cfg: DictConfig, vocab: list, device: torch.device):
     return agent
 
 
-def build_optimizer(model, cfg_opt):
+def build_optimizer(
+    model: Union[torch.nn.Module, Any],  # Any for RandomAgent
+    cfg_opt: DictConfig,
+):
     """Return (optimizer, scheduler_or_None) given model and cfg subsections."""
     opt_cls = getattr(torch.optim, cfg_opt.optimizer)
     optimizer = opt_cls(
